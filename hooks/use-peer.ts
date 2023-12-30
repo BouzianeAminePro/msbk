@@ -27,7 +27,18 @@ const usePeer = (stream: MediaStream) => {
   useEffect(() => {
     (async function createPeerAndJoinRoom() {
       try {
-        const peer = new (await import("peerjs")).default();
+        const peer = new (await import("peerjs")).default({
+          config: {
+            iceServers: [
+              { urls: [String(process.env.STUN_SERVER_URL)] },
+              {
+                url: String(process.env.TURN_SERVER_URL),
+                credential: String(process.env.TURN_SERVER_CREDENTIAL),
+                username: String(process.env.TURN_SERVER_USERNAME),
+              },
+            ],
+          },
+        });
         setPeer(peer);
         setIsLoading(false);
 

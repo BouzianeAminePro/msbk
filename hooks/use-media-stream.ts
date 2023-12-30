@@ -1,16 +1,16 @@
-import React from 'react';
-import { Status, Nullable } from '@common/types';
+import { useEffect, useState } from "react";
+import { Status, Nullable } from "@common/types";
 
 export default function useStream(stream: Nullable<MediaStream> = null) {
-  const [state, setState] = React.useState<Nullable<MediaStream>>(stream);
-  const [status, setStatus] = React.useState<Status>('loading');
+  const [state, setState] = useState<Nullable<MediaStream>>(stream);
+  const [status, setStatus] = useState<Status>("loading");
 
-  const [m, setM] = React.useState(false);
-  const [v, setV] = React.useState(true);
+  const [m, setM] = useState(false);
+  const [v, setV] = useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (stream) {
-      setStatus('idle');
+      setStatus("idle");
 
       const [audio, video] = stream.getTracks();
       setM(!audio.enabled);
@@ -24,18 +24,18 @@ export default function useStream(stream: Nullable<MediaStream> = null) {
           });
 
           setState(stream);
-          setStatus('success');
+          setStatus("success");
         } catch (error) {
-          setStatus('rejected');
-          console.error('Access denied for audio and video stream', error);
+          setStatus("rejected");
+          console.error("Access denied for audio and video stream", error);
         }
       })();
     }
   }, []);
 
-  function toggle(kind: 'audio' | 'video') {
+  function toggle(kind: "audio" | "video") {
     return (s = state) => {
-      if (!s) throw new Error('Failed. Could not find stream');
+      if (!s) throw new Error("Failed. Could not find stream");
 
       const track = s.getTracks().find((track) => track.kind == kind);
 
@@ -44,20 +44,20 @@ export default function useStream(stream: Nullable<MediaStream> = null) {
 
       if (track.enabled) {
         track.enabled = false;
-        track.kind == 'audio' ? setM(true) : setV(false);
+        track.kind == "audio" ? setM(true) : setV(false);
       } else {
         track.enabled = true;
-        track.kind == 'audio' ? setM(false) : setV(true);
+        track.kind == "audio" ? setM(false) : setV(true);
       }
     };
   }
 
   async function toggleVideo(cb?: unknown) {
-    if (!state) throw new Error('There is no a video stream to toggle');
+    if (!state) throw new Error("There is no a video stream to toggle");
 
     const videoTrack = state.getVideoTracks()[0];
 
-    if (videoTrack.readyState === 'live') {
+    if (videoTrack.readyState === "live") {
       videoTrack.enabled = false;
       videoTrack.stop(); // * turns off web cam light indicator
       setV(false);
@@ -68,7 +68,7 @@ export default function useStream(stream: Nullable<MediaStream> = null) {
       });
       const newVideoTrack = newStream.getVideoTracks()[0];
 
-      if (typeof cb === 'function') {
+      if (typeof cb === "function") {
         cb(newVideoTrack);
       }
 
@@ -92,10 +92,10 @@ export default function useStream(stream: Nullable<MediaStream> = null) {
     muted: m,
     visible: v,
     toggle,
-    toggleAudio: toggle('audio'),
+    toggleAudio: toggle("audio"),
     toggleVideo,
-    isLoading: status == 'loading',
-    isError: status == 'rejected',
-    isSuccess: status == 'success' || status == 'idle',
+    isLoading: status == "loading",
+    isError: status == "rejected",
+    isSuccess: status == "success" || status == "idle",
   };
 }

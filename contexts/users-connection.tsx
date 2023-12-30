@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useState } from 'react';
 import { toast } from 'react-toastify';
 
@@ -9,7 +10,6 @@ import { SocketContext } from '@pages/_app';
 import { PeerVideo } from '@components/index';
 import { UsersStateContext, UsersUpdaterContext } from './users-settings';
 import { PeerId } from '@common/types';
-import { useRouter } from 'next/router';
 
 export const UsersConnectionContext = createContext<any>({});
 

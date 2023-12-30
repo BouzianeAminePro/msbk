@@ -9,8 +9,9 @@ import { useMediaStream } from "@hooks/index";
 
 import { LoaderError } from "@common/components";
 import { FAILURE_MSG, LOADER_STREAM_MSG } from "@common/constants";
+import { QoraContextType } from "@common/types";
 
-export const QoraContext = createContext<any>({});
+export const QoraContext = createContext<Partial<QoraContextType>>({});
 
 const Qora: NextPage = () => {
   const [isLobby, setIsLobby] = useState(true);
@@ -30,7 +31,7 @@ const Qora: NextPage = () => {
   return (
     <>
       <Header />
-      <Room stream={stream} />{" "}
+      <Room stream={stream} />
     </>
   );
 };
