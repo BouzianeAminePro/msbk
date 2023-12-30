@@ -1,26 +1,26 @@
-import type { NextPage } from 'next';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
+import type { NextPage } from "next";
+import { useRouter } from "next/router";
+import { useCallback, useState } from "react";
 
-import { ROOM_NAME } from 'common/constants';
-import { createRoomId, createHost } from '@common/utils';
+import { ROOM_NAME } from "common/constants";
+import { createRoomId, createHost } from "@common/utils";
 
-import { Header, WelcomeContainer } from '../components';
+import { Header, WelcomeContainer } from "../components";
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const [roomId, setRoomId] = useState('');
+  const [roomId, setRoomId] = useState("");
 
-  function createRoom() {
-    const roomId = createRoomId();
+  const createRoom = useCallback(() => {
+    const newRoomId = createRoomId();
 
-    createHost(roomId);
+    createHost(newRoomId);
+    router.push(`/${ROOM_NAME}/${newRoomId}`);
+  }, [router, createRoomId, ROOM_NAME]);
+
+  const joinRoom = useCallback(() => {
     router.push(`/${ROOM_NAME}/${roomId}`);
-  }
-
-  function joinRoom() {
-    router.push(`/${ROOM_NAME}/${roomId}`);
-  }
+  }, [router, ROOM_NAME, roomId]);
 
   return (
     <>
@@ -31,7 +31,7 @@ const Home: NextPage = () => {
           onClick={createRoom}
           className="p-3 bg-emerald-300 hover:bg-indigo-200 rounded-md text-emerald-800 text-sm founded-medium"
         >
-          Jańa qora
+          Join msbk
         </button>
 
         <input
@@ -42,7 +42,7 @@ const Home: NextPage = () => {
 
         <button
           onClick={joinRoom}
-          disabled={roomId.length == 0}
+          disabled={!roomId.length}
           className="p-3 bg-emerald-500 hover:bg-indigo-300 rounded-md text-emerald-800 text-sm founded-medium disabled:bg-gray-300 disabled:cursor-not-allowed"
         >
           Join

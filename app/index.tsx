@@ -1,18 +1,18 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from "react";
 
-import { ControlPanel, Chat, Status } from '@components/index';
-import { Streams, SharedScreenStream } from '@components/streams';
-import { usePeer, useScreen } from '@hooks/index';
-import useMediaStream from '@hooks/use-media-stream';
-import { SocketContext } from '@pages/_app';
-import { UsersSettingsProvider, UsersConnectionProvider } from 'contexts';
-import { useRouter } from 'next/router';
-import { MediaConnection } from 'peerjs';
-import { toast, ToastContainer } from 'react-toastify';
+import { ControlPanel, Chat, Status } from "@components/index";
+import { Streams, SharedScreenStream } from "@components/streams";
+import { usePeer, useScreen } from "@hooks/index";
+import useMediaStream from "@hooks/use-media-stream";
+import { SocketContext } from "@pages/_app";
+import { UsersSettingsProvider, UsersConnectionProvider } from "contexts";
+import { useRouter } from "next/router";
+import { MediaConnection } from "peerjs";
+import { toast, ToastContainer } from "react-toastify";
 
-import { LoaderError, Modal } from '@common/components';
-import { FAILURE_MSG, LOADER_PEER_MSG, TOAST_PROPS } from '@common/constants';
-import { Kind, PeerId } from '@common/types';
+import { LoaderError, Modal } from "@common/components";
+import { FAILURE_MSG, LOADER_PEER_MSG, TOAST_PROPS } from "@common/constants";
+import { Kind, PeerId } from "@common/types";
 
 export default function App({ stream }: { stream: MediaStream }) {
   const router = useRouter();
@@ -22,8 +22,8 @@ export default function App({ stream }: { stream: MediaStream }) {
   const { peer, myId, isPeerReady } = usePeer(stream);
   const { startShare, stopShare, screenTrack } = useScreen(stream);
 
-  const [modal, setModal] = useState<'hidden' | 'chat' | 'status' | 'close'>(
-    'hidden'
+  const [modal, setModal] = useState<"hidden" | "chat" | "status" | "close">(
+    "hidden"
   );
   const [fullscreen, setFullscreen] = useState(false);
 
@@ -44,17 +44,17 @@ export default function App({ stream }: { stream: MediaStream }) {
   }, []);
 
   useEffect(() => {
-    socket.on('host:muted-user', (peerId: PeerId) => {
+    socket.on("host:muted-user", (peerId: PeerId) => {
       if (myId === peerId) {
-        toggleKind('audio');
-        toast('you are muted by host');
+        toggleKind("audio");
+        toast("you are muted by host");
       } else {
-        toast('user muted by host');
+        toast("user muted by host");
       }
     });
 
     return () => {
-      socket.off('host:muted-user');
+      socket.off("host:muted-user");
     };
   }, [myId]);
 
@@ -63,45 +63,45 @@ export default function App({ stream }: { stream: MediaStream }) {
 
   async function toggleKind(kind: Kind, users?: MediaConnection[]) {
     switch (kind) {
-      case 'audio': {
-        toggle('audio')(stream);
-        socket.emit('user:toggle-audio', myId);
+      case "audio": {
+        toggle("audio")(stream);
+        socket.emit("user:toggle-audio", myId);
         return;
       }
-      case 'video': {
+      case "video": {
         toggleVideo((newVideoTrack: MediaStreamTrack) =>
           users!.forEach(replaceTrack(newVideoTrack))
         );
-        socket.emit('user:toggle-video', myId);
+        socket.emit("user:toggle-video", myId);
         return;
       }
-      case 'screen': {
+      case "screen": {
         if (screenTrack) {
           stopShare(screenTrack);
-          socket.emit('user:stop-share-screen');
+          socket.emit("user:stop-share-screen");
           setFullscreen(false);
-          toast('Stopped presenting screen');
+          toast("Stopped presenting screen");
         } else {
           await startShare(
             () => {
-              socket.emit('user:share-screen');
-              toast('Starting presenting screen');
+              socket.emit("user:share-screen");
+              toast("Starting presenting screen");
             },
-            () => socket.emit('user:stop-share-screen')
+            () => socket.emit("user:stop-share-screen")
           );
         }
         return;
       }
-      case 'fullscreen': {
+      case "fullscreen": {
         setFullscreen(!fullscreen);
         return;
       }
-      case 'chat': {
-        modal == 'chat' ? setModal('close') : setModal('chat');
+      case "chat": {
+        setModal(modal == "chat" ? "close" : "chat");
         return;
       }
-      case 'users': {
-        modal == 'status' ? setModal('close') : setModal('status');
+      case "users": {
+        setModal(modal == "status" ? "close" : "status");
         return;
       }
       default:
@@ -134,9 +134,9 @@ export default function App({ stream }: { stream: MediaStream }) {
                 visible={visible}
                 muted={muted}
                 screenTrack={Boolean(screenTrack)}
-                chat={modal == 'chat'}
+                chat={modal == "chat"}
                 onToggle={toggleKind}
-                onLeave={() => router.push('/')}
+                onLeave={() => router.push("/")}
               />
             </div>
           </UsersConnectionProvider>
@@ -144,19 +144,19 @@ export default function App({ stream }: { stream: MediaStream }) {
 
         <Modal
           title={
-            modal === 'chat'
-              ? 'Meeting Chat'
-              : modal === 'status'
-              ? 'People'
-              : ''
+            modal === "chat"
+              ? "Meeting Chat"
+              : modal === "status"
+              ? "People"
+              : ""
           }
           modal={modal}
-          onClose={() => setModal('close')}
+          onClose={() => setModal("close")}
         >
-          <div className={modal !== 'chat' ? 'hidden' : ''}>
+          <div className={modal !== "chat" ? "hidden" : ""}>
             <Chat />
           </div>
-          <div className={modal !== 'status' ? 'hidden' : ''}>
+          <div className={modal !== "status" ? "hidden" : ""}>
             <Status muted={muted} visible={visible} />
           </div>
         </Modal>

@@ -1,6 +1,6 @@
-import Link from 'next/link';
-import { UserIcon } from '../../assets/icons';
-import { useSession } from 'next-auth/react';
+import Link from "next/link";
+import { UserIcon } from "../../assets/icons";
+import { useSession } from "next-auth/react";
 
 const Header = () => {
   const { data: session } = useSession();
@@ -12,6 +12,13 @@ const Header = () => {
           <div className="flex-1 flex items-center justify-center sm:items-stretch sm:justify-start">
             <div className="hidden sm:block sm:ml-6">
               <div className="flex space-x-4">
+                <Link href="/">
+                  <img
+                    className="h-[150px] w-[150px] cursor-pointer"
+                    src="/images/logo-t-bg.png"
+                    alt=""
+                  />
+                </Link>
                 {!session?.user ? (
                   <Link href="/api/auth/signin">
                     <button className="text-white">Login with Google</button>
@@ -36,7 +43,7 @@ const Header = () => {
                 {session?.user?.image ? (
                   <img
                     className="h-8 w-8 rounded-full"
-                    src={session?.user?.image}
+                    src={session?.user?.image!}
                     alt=""
                   />
                 ) : (
@@ -46,7 +53,7 @@ const Header = () => {
             </div>
           </div>
         </div>
-      </div>{' '}
+      </div>
     </nav>
   );
 };

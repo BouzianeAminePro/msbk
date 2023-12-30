@@ -1,13 +1,14 @@
-import { createContext, useState } from 'react';
+import { NextPage, GetServerSidePropsContext, PreviewData } from "next";
+import { createContext, useState } from "react";
 
-import Room from '@app/index';
-import { Lobby } from '@components/index';
-import { useMediaStream } from '@hooks/index';
-import { NextPage, GetServerSidePropsContext, PreviewData } from 'next';
+import { getSession } from "next-auth/react";
 
-import { LoaderError } from '@common/components';
-import { FAILURE_MSG, LOADER_STREAM_MSG } from '@common/constants';
-import { getSession } from 'next-auth/react';
+import Room from "@app/index";
+import { Header, Lobby } from "@components/index";
+import { useMediaStream } from "@hooks/index";
+
+import { LoaderError } from "@common/components";
+import { FAILURE_MSG, LOADER_STREAM_MSG } from "@common/constants";
 
 export const QoraContext = createContext<any>({});
 
@@ -19,9 +20,19 @@ const Qora: NextPage = () => {
   if (!stream) return <LoaderError msg={FAILURE_MSG} />;
 
   if (isLobby)
-    return <Lobby stream={stream} onJoinRoom={() => setIsLobby(false)} />;
+    return (
+      <>
+        <Header />
+        <Lobby stream={stream} onJoinRoom={() => setIsLobby(false)} />;
+      </>
+    );
 
-  return <Room stream={stream} />;
+  return (
+    <>
+      <Header />
+      <Room stream={stream} />{" "}
+    </>
+  );
 };
 
 export default Qora;
@@ -30,18 +41,17 @@ export const getServerSideProps = async (
   ctx: GetServerSidePropsContext<any, PreviewData>
 ) => {
   const session = await getSession(ctx);
+
   if (!session) {
     return {
       redirect: {
-        destination: '/api/auth/signin',
+        destination: "/api/auth/signin",
         permanent: false,
       },
     };
   }
 
   return {
-    props: {
-      ...ctx.params,
-    },
+    props: {},
   };
 };

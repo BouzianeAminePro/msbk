@@ -12,7 +12,7 @@ export default function WelcomeContainer({
               <h1 className="text-4xl tracking-tight font-extrabold text-gray-900 sm:text-5xl md:text-6xl">
                 <span className="block text-gray-200 xl:inline">
                   Video calls.
-                </span>{' '}
+                </span>{" "}
                 <span className="block text-emerald-500 xl:inline">
                   Now "expensive" for everyone.
                 </span>
