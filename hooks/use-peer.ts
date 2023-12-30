@@ -30,7 +30,7 @@ const usePeer = (stream: MediaStream) => {
         const peer = new (await import("peerjs")).default({
           config: {
             iceServers: [
-              { urls: [String(process.env.STUN_SERVER_URL)] },
+              { url: [String(process.env.STUN_SERVER_URL)] },
               {
                 url: String(process.env.TURN_SERVER_URL),
                 credential: String(process.env.TURN_SERVER_CREDENTIAL),
